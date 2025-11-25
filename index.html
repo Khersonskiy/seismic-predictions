@@ -69,13 +69,13 @@
       const canvas = document.getElementById('shareCanvas');
       const ctx = canvas.getContext('2d');
       const text = document.getElementById('fortune-text').textContent;
-      ctx.fillStyle = '#2b0a14';
+      ctx.fillStyle = '#9d7a9d';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#ff7aa7';
+      ctx.fillStyle = '#fff';
       ctx.font = 'bold 40px Inter';
       ctx.textAlign = 'center';
       ctx.fillText('Seismic Fortune Cards', canvas.width / 2, 80);
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = '#000';
       ctx.font = '28px Inter';
       const maxWidth = canvas.width - 80;
       const lines = [];
