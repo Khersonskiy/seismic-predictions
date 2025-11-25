@@ -1,90 +1,155 @@
 <!DOCTYPE html>
-<!-- Fixed: modal variable name typo in showPrediction function -->
-<!-- FIXED: modal is now correct variable name -->
-<html lang="uk">
+<html lang="en">
 <head>
-  <!-- v1.1 FIXED -->
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Seismic Передбачення</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seismic Fortune Cards</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, #2b0a14, #11060a, #070207);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ff8fb8;
+        }
+
+        .cards-container {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+            padding: 0 20px;
+        }
+
+        .card {
+            width: 160px;
+            height: 240px;
+            border-radius: 18px;
+            background: #1a0b11;
+            border: 2px solid #ff7aa7;
+            box-shadow: 0 0 20px #ff2f75;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: #ff8fb8;
+        }
+
+        .card:hover {
+            transform: scale(1.07);
+            box-shadow: 0 0 30px #ff4d92;
+            background: #2a1520;
+        }
+
+        .fortune-box {
+            margin-top: 40px;
+            text-align: center;
+            padding: 25px;
+            width: 80%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid #ff7aa7;
+            display: none;
+        }
+
+        .fortune-box h2 {
+            color: #ff8fb8;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .fortune-box p {
+            color: #fff;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .button {
+            margin-top: 20px;
+            margin-left: 10px;
+            padding: 12px 22px;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #ff7aa7, #ff2f75);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .button:hover {
+            opacity: 0.85;
+            transform: translateY(-2px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-  <div class="main-container">
-    <div class="header">
-      <h1 class="title">🔮 Seismic Передбачення</h1>
-      <p class="subtitle">Обери карту та отримай своьо передбачення!</p>
+    <h1>🔮 Seismic Fortune Cards 🔮</h1>
+    
+    <div class="cards-container">
+        <div class="card" onclick="revealFortune()">1</div>
+        <div class="card" onclick="revealFortune()">2</div>
+        <div class="card" onclick="revealFortune()">3</div>
+        <div class="card" onclick="revealFortune()">4</div>
+        <div class="card" onclick="revealFortune()">5</div>
     </div>
 
-    <div id="cards-container" class="cards-container"></div>
-
-    <div id="prediction-modal" class="prediction-modal hidden">
-      <div class="modal-content">
-        <button class="close-btn" onclick="closePrediction()">×</button>
-        <div class="modal-card">
-          <div class="card-visual"></div>
-        </div>
-        <div class="prediction-text" id="prediction-text"></div>
-        <div class="action-buttons">
-          <button class="btn btn-copy" onclick="copyPrediction()">Skopiyuvaty</button>
-          <button class="btn btn-twitter" onclick="tweetPrediction()">Repostnyty u Twitter</button>
-        </div>
-      </div>
+    <div class="fortune-box" id="fortune-box">
+        <h2>Your Fortune</h2>
+        <p id="fortune-text"></p>
+        <button class="button" onclick="shareOnTwitter()">Share on 𝕏</button>
     </div>
-  </div>
 
-  <script src="predictions.js"></script>
-  <script>
-    const CARD_COUNT = 5;
-    const COLORS = ['#9d6b8a', '#a87699', '#b38ba6', '#8d5a7e', '#ad7b96'];
-    let selectedPrediction = '';
+    <script>
+        const fortunes = [
+            "Magnitude rises - your breakthrough is close.",
+            "Seismic energy surrounds you today.",
+            "A new opportunity will open faster than a TEE computation.",
+            "Your consistency is your superpower.",
+            "Prepare - a positive shift is coming.",
+            "Rocky watches over your journey.",
+            "Your next win will be bigger than expected.",
+            "Stay steady - progress is compounding.",
+            "Your intuition today is on point.",
+            "Someone will appreciate your work soon.",
+            "Trust the process - you're exactly where you need to be.",
+            "Your vision will become reality sooner than you think."
+        ];
 
-    function initCards() {
-      const container = document.getElementById('cards-container');
-      container.innerHTML = '';
-      for (let i = 0; i < CARD_COUNT; i++) {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.backgroundColor = COLORS[i];
-        card.innerHTML = `<div class="card-number">${i + 1}</div>`;
-        card.onclick = () => showPrediction(i);
-        container.appendChild(card);
-      }
-    }
+        function revealFortune() {
+            const box = document.getElementById('fortune-box');
+            const text = document.getElementById('fortune-text');
+            const randomIndex = Math.floor(Math.random() * fortunes.length);
+            text.textContent = fortunes[randomIndex];
+            box.style.display = 'block';
+        }
 
-    function getRandomPrediction() {
-      return predictions[Math.floor(Math.random() * predictions.length)];
-    }
-
-    function showPrediction(cardIndex) {
-      selectedPrediction = getRandomPrediction();
-      const modal = document.getElementById('prediction-modal');
-      const textEl = document.getElementById('prediction-text');
-      const cardVisual = modal.querySelector('.card-visual');
-
-      textEl.textContent = selectedPrediction;
-      cardVisual.style.backgroundColor = COLORS[cardIndex];
-      modal.classList.remove('hidden');
-    }
-
-    function closePrediction() {
-      document.getElementById('prediction-modal').classList.add('hidden');
-    }
-
-    function copyPrediction() {
-      const text = selectedPrediction + '\n\n🔮 Seismic Predictions - https://github.com/Khersonskiy/seismic-predictions';
-      navigator.clipboard.writeText(text).then(() => {
-        alert('Копіювано!');
-      });
-    }
-
-    function tweetPrediction() {
-      const text = selectedPrediction + ' 🔮 #Seismic #Predictions';
-      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
-      window.open(tweetUrl, '_blank');
-    }
-
-    initCards();
-  </script>
+        function shareOnTwitter() {
+            const text = document.getElementById('fortune-text').textContent;
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + ' 🔮 #SeismicVibes')}?`;
+            window.open(url, '_blank');
+        }
+    </script>
 </body>
 </html>
